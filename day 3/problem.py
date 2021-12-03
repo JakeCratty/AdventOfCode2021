@@ -5,10 +5,9 @@ diagnosticReport = []
 with open("input.txt") as input_file:
 	diagnosticReport = [str(line).split() for line in input_file.readlines()]
 
-
 #functions used in both problems 1 and 2
 def getCommonBitPerColumn(bitStringList, index):
-	#iterate over each bitstring in bitStringList, get most common bit in each column
+	#iterate over each bitstring in bitStringList, get most common bit in the column
 	bitFrequency = [0, 0]
 	for bitString in bitStringList:
 		bit = int(bitString[0][index])
@@ -41,11 +40,10 @@ epsilon_int = int(epsilon_rate, 2)
 
 print(f"Gamma: {gamma_int}\nEpsilon: {epsilon_int}\nPart 1 Answer: {gamma_int * epsilon_int}\n")
 
-
 #----------------------------------------------------------------------------------------------------------------
 #problem 2
 def refineList(bitStringList, criteria):
-	for i in range(len(bitStringList)-1, -1, -1):
+	for i in range(len(bitStringList)-1, -1, -1): #iterate backwards to properly remove elements
 		bitString = bitStringList[i]
 		if(int(bitString[0][index]) != criteria):
 			bitStringList.remove(bitString)
@@ -57,13 +55,13 @@ scrub_rate = 0
 oxyCopy = diagnosticReport.copy()
 scrubCopy = diagnosticReport.copy()
 
-
 for index in range(rateLength):
 	oxyCriteria = getCommonBitPerColumn(oxyCopy, index)
-	scrubCriteria = (getCommonBitPerColumn(scrubCopy, index) + 1) % 2
+	scrubCriteria = (getCommonBitPerColumn(scrubCopy, index) + 1) % 2 #flip bit for scrub criteria
 	if(len(oxyCopy) > 1): oxyCopy = refineList(oxyCopy, oxyCriteria)
 	if(len(scrubCopy) > 1): scrubCopy = refineList(scrubCopy, scrubCriteria)
 
+#convert bitstrings to base 10
 oxy_int = int(oxyCopy[0][0], 2)
 scrub_int = int(scrubCopy[0][0], 2)
 
