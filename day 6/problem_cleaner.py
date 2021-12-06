@@ -18,7 +18,7 @@ def simulateXDays(days):
 	buffer2 = {0:0, 1:0, 2:0, 3:0, 4:0, 5:0, 6:0, 7:0, 8:0}
 	for fish in initialState[:]: buffer1[fish] += 1
 	for i in range(days):
-		if(i%2==0):	advanceDay(buffer1, buffer2)
+		if(i%2==0): advanceDay(buffer1, buffer2)
 		else: advanceDay(buffer2, buffer1)
 	sum = 0
 	for key in buffer1:
@@ -32,4 +32,4 @@ if __name__ == "__main__":
 	simulateXDays(80)
 	simulateXDays(256)
 	simulateXDays(512)
-	simulateXDays(1024)
+	simulateXDays(1024)191,159,917,140,857,400,128,525,719,148,613,699,305,854
