@@ -32,4 +32,4 @@ if __name__ == "__main__":
 	simulateXDays(80)
 	simulateXDays(256)
 	simulateXDays(512)
-	simulateXDays(1024)191,159,917,140,857,400,128,525,719,148,613,699,305,854
+	simulateXDays(1024)
