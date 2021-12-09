@@ -24,28 +24,22 @@ print(count)
 #problem 2
 print("\nProblem 2")
 print("---------")
-def removeFromPossibleSegments(ch):
-	print(f"Removing {ch}")
-	for key in possibleSegments.keys():
-		if ch in possibleSegments[key]:
-			possibleSegments[key].remove(ch)
-def unscrambleSegments(): 
-	pass
-digitOne = ""
-digitTwo = ""
-digitThree = ""
-digitFour = ""
-digitFive = ""
-digitSix = ""
-digitSeven = ""
-digitEight = ""
-digitNine = ""
-possibleSegments = {0:[], 1:[], 2:[], 3:[], 4:[], 5:[], 6:[]}
-testInput = [[line[0].split() for line in input]][0]
-print(testInput)
-print([line[0].split() for line in input][0])
-for digitList in [[line[0].split() for line in input]][0]: #determine for sure digits 1, 4, 7, and 8
-	print(f"digit list: {digitList}")
+def removeFromPossibleSegments(possibleSegmentList, ch):
+	for key in possibleSegmentList.keys():
+		if ch in possibleSegmentList[key]:
+			possibleSegmentList[key].remove(ch)
+
+def unscrambleSegments(digitList):
+	possibleSegments = {0:[], 1:[], 2:[], 3:[], 4:[], 5:[], 6:[]}
+	digitOne = ""
+	digitTwo = ""
+	digitThree = ""
+	digitFour = ""
+	digitFive = ""
+	digitSix = ""
+	digitSeven = ""
+	digitEight = ""
+	digitNine = ""
 	for segments in digitList:
 		if(len(segments) == 2):
 			digitOne = segments
@@ -55,48 +49,47 @@ for digitList in [[line[0].split() for line in input]][0]: #determine for sure d
 			digitFour = segments
 		elif(len(segments) == 7):
 			digitEight = segments
-print(f"1: {digitOne}| 4: {digitFour}| 7: {digitSeven}| 8: {digitEight}")
 
-for segment in digitSeven: #use digits 1 and 7 to figure out segment 0
-	if segment not in digitOne: 
-		possibleSegments[0] = segment
-	else: 
-		possibleSegments[2] += segment #add the other segments to possibly segments 2 and 5
-		possibleSegments[5] += segment
+	for segment in digitSeven: #use digits 1 and 7 to figure out segment 0
+		if segment not in digitOne: 
+			possibleSegments[0] = segment
+		else: 
+			possibleSegments[2] += segment #add the other segments to possibly segments 2 and 5
+			possibleSegments[5] += segment
 
-for segment in digitFour: #using digit four, add the possible segments to 1 and 3 (not the ones found in digit 1)
-	if segment not in digitOne:
-		possibleSegments[1] += segment
-		possibleSegments[3] += segment
+	for segment in digitFour: #using digit four, add the possible segments to 1 and 3 (not the ones found in digit 1)
+		if segment not in digitOne:
+			possibleSegments[1] += segment
+			possibleSegments[3] += segment
 
-for segment in digitEight: #using digit 8, add the possible segments to 4 and 6, but not the one that's definitely segment 0
-	if segment not in digitFour and segment != possibleSegments[0]:
-		possibleSegments[4] += segment
-		possibleSegments[6] += segment
+	for segment in digitEight: #using digit 8, add the possible segments to 4 and 6, but not the one that's definitely segment 0
+		if segment not in digitFour and segment != possibleSegments[0]:
+			possibleSegments[4] += segment
+			possibleSegments[6] += segment
 
-for digitList in [[line[0].split() for line in input]][0]:
+
 	for segments in digitList:
 		if(len(segments) == 6): #if the digit has 6 segments
 			for ch in possibleSegments[2]: #if the segments don't have one of the ones from digit 1
 				if ch not in segments:  
 					digitSix = segments #this is definitely digit 6
-					removeFromPossibleSegments(ch) #we found segment 2 so remove it from all possible and add it to segment 2
+					removeFromPossibleSegments(possibleSegments, ch) #we found segment 2 so remove it from all possible and add it to segment 2
 					possibleSegments[2] = ch
 
-for digitList in [[line[0].split() for line in input]][0]:
+
 	for segments in digitList:
 		if(len(segments) == 5 and possibleSegments[2] not in segments): #if the digit has 5 segments
 			digitFive = segments
 
-for segment in possibleSegments[6]: #determine segment 4 and 6 using digit five
-	if(segment not in digitFive):
-		removeFromPossibleSegments(segment)
-		possibleSegments[4] = segment
-	else:
-		removeFromPossibleSegments(segment)
-		possibleSegments[6] = segment
+	for segment in possibleSegments[6]: #determine segment 4 and 6 using digit five
+		if(segment not in digitFive):
+			removeFromPossibleSegments(possibleSegments, segment)
+			possibleSegments[4] = segment
+		else:
+			removeFromPossibleSegments(possibleSegments, segment)
+			possibleSegments[6] = segment
 
-for digitList in [[line[0].split() for line in input]][0]:
+
 	for segments in digitList:
 		if(len(segments) == 5 and segments != digitFive): #if the digit has 5 segments and is digit two or three
 			if(possibleSegments[5][0] not in segments):
@@ -104,15 +97,43 @@ for digitList in [[line[0].split() for line in input]][0]:
 			else:
 				digitThree = segments
 
-for segment in digitTwo: #find segment 3, which also finds segment 1
-	if segment in possibleSegments[3]:
-		removeFromPossibleSegments(segment)
-		possibleSegments[3] = segment
+	for segment in digitTwo: #find segment 3, which also finds segment 1
+		if segment in possibleSegments[3]:
+			removeFromPossibleSegments(possibleSegments, segment)
+			possibleSegments[3] = segment
 
-possibleSegments[1] = possibleSegments[1][0] #clean up the lists
-possibleSegments[4] = possibleSegments[4][0]
-possibleSegments[5] = possibleSegments[5][0]
+	possibleSegments[1] = possibleSegments[1][0] #clean up the lists
+	possibleSegments[4] = possibleSegments[4][0]
+	possibleSegments[5] = possibleSegments[5][0]
+	return [digitOne, digitTwo, digitThree, digitFour, digitFive, digitSix, digitSeven, digitEight, digitNine]
 
-print(f"Digit Two: {digitTwo}")
-print(f"Digit Three: {digitThree}")
-print(possibleSegments)
+def getNumberFromSegmentList(digitSegments, digitCombinations):
+	if(len(digitSegments)) == 2: return 1
+	if(len(digitSegments) == 4): return 4
+	if(len(digitSegments) == 3): return 7
+	if(len(digitSegments) == 7): return 8
+
+	for i in range(len(digitCombinations)):
+		possibleDigit = digitCombinations[i]
+		totalMatches = len(digitSegments)
+		maxMatches = totalMatches
+		for segment in digitSegments:
+			if segment in possibleDigit: 
+				maxMatches -= 1
+		if maxMatches == 0 and totalMatches == len(possibleDigit): return (i + 1)
+	return 9
+
+for listOfInputs in [[[line[0].split(), line[1].split()] for line in input]]: #determine for sure digits 1, 4, 7, and 8
+	totalSum = 0
+	for digitList in listOfInputs:
+		digitCombinations = unscrambleSegments(digitList[0])
+
+		fourDigitNumber = ""
+		for outputDigit in digitList[1]:
+			fourDigitNumber += str(getNumberFromSegmentList(outputDigit, digitCombinations))
+
+		number = int(fourDigitNumber)
+		print(number)
+		totalSum += number
+	print(f"Part Two Sum: {totalSum}")
+			
