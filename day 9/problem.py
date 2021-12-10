@@ -14,7 +14,7 @@ mapsize = mapwidth * mapheight
 
 neighborMap = []
 def getNeighbors(index):
-	neighbors = [] #((value, (neighborvalues)),(neigborindices))
+	neighbors = []
 	value = map[i]
 	if(i < mapwidth or i >= mapsize - mapwidth):
 		if(i == 0 or i == mapsize - mapwidth): neighbors.append(i+1)
