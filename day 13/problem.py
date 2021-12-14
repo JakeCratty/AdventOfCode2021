@@ -5,10 +5,8 @@ def foldX(foldLine):
 	for y in originalMap.keys():
 		for i in range(len(originalMap[y])-1, -1, -1):
 			x = originalMap[y][i]
-			if(x < foldLine): 
-				addToRow(newMap, x, y)
-			elif(x != foldLine):
-				addToRow(newMap, 2 * foldLine - x, y)
+			if(x < foldLine): addToRow(newMap, x, y)
+			elif(x != foldLine): addToRow(newMap, 2 * foldLine - x, y)
 
 	return newMap
 
@@ -17,10 +15,8 @@ def foldY(foldLine):
 	for y in originalMap.keys():
 		for i in range(len(originalMap[y])-1, -1, -1):
 			x = originalMap[y][i]
-			if(y < foldLine):
-				addToRow(newMap, x, y)
-			elif(y != foldLine): 
-				addToRow(newMap, x, 2*foldLine - y)
+			if(y < foldLine): addToRow(newMap, x, y)
+			elif(y != foldLine): addToRow(newMap, x, 2*foldLine - y)
 	return newMap
 
 def addToRow(map, x, y):
@@ -30,8 +26,7 @@ def addToRow(map, x, y):
 def getWidest(row):
 	widest = 0
 	for col in row:
-		if col > widest:
-			widest = col
+		if col > widest: widest = col
 	return widest
 
 #problem 2 (no problem 1 - too easy / got overwritten)
@@ -74,8 +69,6 @@ if __name__ == '__main__':
 		for y in range(0, (highestCol+1)*2):
 			yVal = y//2
 			for x in range(0, (widestRow+1)):
-				if yVal in originalMap.keys() and x in originalMap[yVal]:
-					output_file.write(block + block)
-				else:
-					output_file.write(space + space)
+				if yVal in originalMap.keys() and x in originalMap[yVal]: output_file.write(block + block)
+				else: output_file.write(space + space)
 			output_file.write(newline)
