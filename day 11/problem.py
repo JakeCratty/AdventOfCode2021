@@ -28,7 +28,7 @@ def flash(index):
 	neighbors = []
 	octopusMap[index] = -1
 	if(index < mapwidth or index >= mapsize - mapwidth): #top or bottom rows
-		if(index == 0 or index == mapsize - mapwidth): 
+		if(index%mapwidth==0): #left column
 			neighbors.append(index+1)
 			if(index == 0): neighbors.append(index+mapwidth+1) #top left corner gets bottom right neighbor
 			else: neighbors.append(index-mapwidth+1) #bottom left corner gets top right neighbor

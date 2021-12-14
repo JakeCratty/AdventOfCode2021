@@ -1,5 +1,7 @@
 #December 12th, 2021
+import time
 
+start = time.time()
 input = []
 with open("input.txt") as input_file:
 	input = [line.strip().split('-') for line in input_file.readlines()]
@@ -32,4 +34,6 @@ def traverseAll(currentNode, smallCavesVisited, beenToSmallCaveTwice):
 	return pathsFound
 
 totalPaths = traverseAll("start", [], False)
+end = time.time()
+print(f"Execution time: {str(round((end-start)*100, 0))}ms")
 print(f"Part 2 Answer:\n\tTotal Paths Found: {totalPaths}")
