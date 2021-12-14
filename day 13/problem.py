@@ -71,10 +71,12 @@ with open('outputfile.txt', mode='wb') as output_file:
 		widestInRow = getWidest(originalMap[y])
 		if widestInRow > widestRow: widestRow = widestInRow
 		if y > highestCol: highestCol = y
-	for y in range(0, highestCol+1):
-		for x in range(0, widestRow+1):
-			if y in originalMap.keys() and x in originalMap[y]:
-				output_file.write(block)
+	for y in range(0, (highestCol+1)*2):
+		yVal = y//2
+		print(yVal)
+		for x in range(0, (widestRow+1)):
+			if yVal in originalMap.keys() and x in originalMap[yVal]:
+				output_file.write(block + block)
 			else:
-				output_file.write(space)
+				output_file.write(space + space)
 		output_file.write(newline)
