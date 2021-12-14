@@ -1,51 +1,56 @@
 #December 13th, 2021
+import os
+
 input = []
 dotLocations = []
 foldInstructions = []
+originalMap = {}
+
 with open("input.txt") as input_file:
 	for line in input_file.readlines():
 		line = line.strip()
 		if "," in line: dotLocations.append(line.split(","))
 		elif "x" in line or "y" in line: foldInstructions.append(line)
 
-originalMap = {}
-def addToColumn(map, x, y):
-	if x not in map.keys(): map[x] = []
-	if y not in map[x]: map[x].append(y)
+def addToRow(map, x, y):
+	if y not in map.keys(): map[y] = []
+	if x not in map[y]: map[y].append(x)
 
 def foldX(foldLine):
 	newMap = {}
-	for x in originalMap.keys():
-		for i in range(len(originalMap[x])-1, -1, -1):
-			y = originalMap[x][i]
+	for y in originalMap.keys():
+		for i in range(len(originalMap[y])-1, -1, -1):
+			x = originalMap[y][i]
 			if(x < foldLine): 
-				addToColumn(newMap, x, y)
+				addToRow(newMap, x, y)
 			elif(x != foldLine):
-				addToColumn(newMap, foldLine - (x - foldLine), y)
+				addToRow(newMap, foldLine - (x - foldLine), y)
 
 	return newMap
 
 def foldY(foldLine):
 	newMap = {}
-	for x in originalMap.keys():
-		for i in range(len(originalMap[x])-1, -1, -1):
-			y = originalMap[x][i]
+	for y in originalMap.keys():
+		for i in range(len(originalMap[y])-1, -1, -1):
+			x = originalMap[y][i]
 			if(y < foldLine):
-				addToColumn(newMap, x, y)
+				addToRow(newMap, x, y)
 			elif(y != foldLine): 
-				addToColumn(newMap, x, foldLine - (y - foldLine))
+				addToRow(newMap, x, foldLine - (y - foldLine))
 	return newMap
 
-def getHighest(col):
-	highest = 0
-	for row in col:
-		if row > highest:
-			highest = row
-	return highest
+def getWidest(row):
+	widest = 0
+	for col in row:
+		if col > widest:
+			widest = col
+	return widest
+
+#problem 2 (no problem 1 - too easy / got overwritten)
 for location in dotLocations:
 	x = int(location[0])
 	y = int(location[1])
-	addToColumn(originalMap, x, y)
+	addToRow(originalMap, x, y)
 
 for fold in foldInstructions:
 	axis = fold.split("=")[0][-1]
@@ -55,15 +60,21 @@ for fold in foldInstructions:
 	else: 
 		originalMap = foldY(foldLine)
 
-with open("output.txt", 'w+') as output_file:
+block = u'█'.encode("utf8")
+space = u' '.encode("utf8")
+newline = u'\n'.encode("utf8")
+
+with open('outputfile.txt', mode='wb') as output_file:
+	widestRow = 0
 	highestCol = 0
-	for x in originalMap.keys():
-		highestInColumn = getHighest(originalMap[x])
-		if highestInColumn > highestCol: highestCol = highestInColumn
-	for x in originalMap.keys():
-		for y in range(0, highestCol):
-			if y in originalMap[x]:
-				output_file.write("#")
+	for y in originalMap.keys():
+		widestInRow = getWidest(originalMap[y])
+		if widestInRow > widestRow: widestRow = widestInRow
+		if y > highestCol: highestCol = y
+	for y in range(0, highestCol+1):
+		for x in range(0, widestRow+1):
+			if y in originalMap.keys() and x in originalMap[y]:
+				output_file.write(block)
 			else:
-				output_file.write(".")
-		output_file.write("\n")
+				output_file.write(space)
+		output_file.write(newline)
