@@ -1,76 +1,36 @@
-#December 14th, 2021 Part 2
-
-reactionDict = {}
-totalCountDictionary = {}
-
-def addToDictionary(d1, char):
-	if char in d1.keys():
-		d1[char] += 1
+#December 14th, 2021
+def updatePairCount(pair, change, pairDict):
+	if pair in pairDict.keys():
+		pairDict[pair] += change
 	else:
-		d1[char] = 1
+		pairDict[pair] = change
 
-def mergeDictionaries(d1, d2):
-	newDict = {}
-	#print("merging")
-	for key in d1.keys():
-		newDict[key] = d1[key]
-	for key in d2.keys():
-		if key in newDict.keys():
-			newDict[key] += d2[key]
-		else:
-			newDict[key] = d2[key]
+def combine(pair, count, reactionDict, pairCountDict, charCountDict):
+	if(pair in reactionDict.keys()):
+		resultChar = reactionDict[pair]
+		newPair1 = pair[0] + resultChar
+		newPair2 = resultChar + pair[1]
+		updatePairCount(newPair1, count, pairCountDict)
+		updatePairCount(newPair2, count, pairCountDict)
+		if resultChar in charCountDict.keys():
+			charCountDict[resultChar] += count
+		else: charCountDict[resultChar] = 1
 
-	#print(f"result: {newDict}")
-	return newDict
-
-def mergeCountDictionaries(d1, d2, pairKey):
-	newDict = {}
-	for key in d1.keys():
-		newDict[key] = d1[key]
-	for key in d2.keys():
-		newDict[pairKey] = d2[key]
-	return newDict
-
-def getTotalCharCountPerPair(pair, generations):
-	global totalCountDictionary
-
-	#print(f"{(totalCountDictionary)}")
-	charCountDict = {}
-	if generations == 0:
-		charCountDict = {pair[0]:0, pair[1]:0}
-		pass
-	elif pair in totalCountDictionary.keys() and generations in totalCountDictionary[pair].keys():
-		print("Using total count dictionary")
-		return totalCountDictionary[pair][generations]
-	elif pair in reactionDict.keys():
-		result = reactionDict[pair]
-		addToDictionary(charCountDict, result)
-		pair1 = pair[0] + reactionDict[pair]
-		pair1CharCountDict = getTotalCharCountPerPair(pair1, generations-1)
-		mergeDictionaries(charCountDict, pair1CharCountDict)
-		pair2 = reactionDict[pair] + pair[1]
-		pair2CharCountDict = getTotalCharCountPerPair(pair2, generations-1)
-		mergeDictionaries(charCountDict, pair2CharCountDict)
-	else:
-		print(f"{pair} not in reaction list")
-		addToDictionary(charCountDict, pair[0])
-		addToDictionary(charCountDict, pair[1])
-
-	generationCount = {generations:charCountDict}
-	if pair in totalCountDictionary.keys():
-		print(f"Using total count dict for generation:  {generations}")
-		print(f"totcd: {totalCountDictionary} thiscd: {generationCount}")
-		mergeCountDictionaries(totalCountDictionary[pair], generationCount, pairKey)
-		print(f"result: {totalCountDictionary}")
-	else:
-		print(f"Total CD: {totalCountDictionary}")
-		print(f"Adding new pair to total dictionary: {len(totalCountDictionary.keys())}")
-		totalCountDictionary[pair] = generationCount
-	return charCountDict
+def getMostAndLeastCommon(charDict):
+	mostCommon = ('', -1)
+	leastCommon = ('', -1)
+	for char in charDict.keys():
+		count = charDict[char]
+		if count > mostCommon[1]: mostCommon = (char, count)
+		elif count < leastCommon[1] or leastCommon[1] == -1:
+			leastCommon = (char, count)
+	return mostCommon, leastCommon
 
 if __name__ == '__main__':
-	polymerString = "" #NNCB -> NCNBCHB
-
+	reactionDict = {}
+	pairCountDictA = {}
+	pairCountDictB = {}
+	charCountDict = {}
 	with open("input.txt") as input_file:
 		input = [line.strip() for line in input_file.readlines()]
 		polymerString = input[0]
@@ -78,12 +38,25 @@ if __name__ == '__main__':
 			reaction = input[i].split(" -> ")
 			reactionDict[reaction[0]] = reaction[1]
 
-	charCountDict = {}
-	addToDictionary(charCountDict, polymerString[0])
+	#problem 2
 	for i in range(1, len(polymerString)):
-		print(f"{i} out of {len(polymerString)-1}")
-		pair = polymerString[i-1:i+1]
-		addToDictionary(charCountDict, polymerString[i])
-		newCharDict = getTotalCharCountPerPair(pair, 40)
-		charCountDict = mergeDictionaries(newCharDict, charCountDict)
-	print(f"{charCountDict}")
+		startingPair = polymerString[i-1:i+1]
+		updatePairCount(startingPair, 1, pairCountDictA)
+	for char in polymerString:
+		if char in charCountDict.keys(): charCountDict[char] += 1
+		else: charCountDict[char] = 1
+	for generation in range(20):
+		print(f"Generation: {generation}")
+		pairCountDictB = {}
+		for pair in pairCountDictA.keys():
+			count = pairCountDictA[pair]
+			combine(pair, count, reactionDict, pairCountDictB, charCountDict)
+		pairCountDictA = {}
+		for pair in pairCountDictB.keys():
+			count = pairCountDictB[pair]
+			combine(pair, count, reactionDict, pairCountDictA, charCountDict)
+
+	mostCommon, leastCommon = getMostAndLeastCommon(charCountDict)
+
+	print(mostCommon, leastCommon)
+	print(f"Part 2 Answer: {mostCommon[1] - leastCommon[1]}")
